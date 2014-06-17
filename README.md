@@ -1,9 +1,9 @@
-python_images
+Python Image Utility functions
 =============
 
 python image functions
 
-<b>Base64FromUrl</b><br>
+<b>_Base64FromUrl_</b><br>
 returns the base64 string of the image from the passed url
 
 | param  | description
@@ -14,7 +14,7 @@ returns the base64 string of the image from the passed url
 
 =============
 
-<b>CropResizeImg</b><br>
+<b>_CropResizeImg_</b><br>
 crops and resize the image to create the thumbnail
 
 | param  | description
@@ -28,7 +28,7 @@ crops and resize the image to create the thumbnail
 
 =============
 
-<b>CropResizeImg64</b><br>
+<b>_CropResizeImg64_</b><br>
 crops and resize the image to create the thumbnail from a base64 string
 
 | param  | description
