@@ -12,8 +12,9 @@ import urllib2
 import json
 
 DEFAULTNOIMAGE_PATH = "/media/hd2/sportapp/defaultthumb.png"
+DEFAULT_LOGO_PATH = "/media/hd2/sportapp/powered-by-espn-silver_200.png"
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 def Base64FromUrl(url):
     """
     returns the base64 string of the image from the passed url
@@ -21,6 +22,7 @@ def Base64FromUrl(url):
     :return:        the base64 string of the image
     """
     return base64.b64encode(urllib.urlopen(url).read())
+
 
 #--------------------------------------------------------------------
 def CropResizeImg(origFilePath, destFilePath, img_w, img_h):
@@ -30,7 +32,6 @@ def CropResizeImg(origFilePath, destFilePath, img_w, img_h):
     :param destFilePath:    the destination file path on the disc
     :param img_w:           the desired image width
     :param img_h:           the desired image height
-    :return:                the resized image
     """
 
     ratio = 1. * img_w / img_h
@@ -39,6 +40,7 @@ def CropResizeImg(origFilePath, destFilePath, img_w, img_h):
     #im.save(fout, "jpeg", quality = 100) # save the image
     #fout.close()
     im.save(destFilePath)
+
 
 #--------------------------------------------------------------------
 def CropResizeImg64(orig64, img_w, img_h):
@@ -66,6 +68,7 @@ def CropResizeImg64(orig64, img_w, img_h):
     im.save(buf, format='PNG')
     jpeg = buf.getvalue()
     return base64.b64encode(jpeg)
+
 
 #--------------------------------------------------------------------
 def CropResizeImg64Save(orig64, img_w, img_h, dest):
@@ -133,10 +136,10 @@ def ResizeImg64(orig64, basesize=900, qualityJpg=70):
     return base64.b64encode(jpeg)
 
 #--------------------------------------------------------------------
-def BlendEspnLogo(orig64):
+def BlendEspnLogo(orig64, logoPath=DEFAULT_LOGO_PATH):
     #orig64=JpgToPng64(orig64)
     im = Image.open(StringIO(base64.b64decode(orig64)))
-    im2 = Image.open("/media/hd2/sportapp/powered-by-espn-silver_200.png")
+    im2 = Image.open(logoPath)
     (width, height) = im.size
     basesize = width / 7
     im2 = im2.resize((basesize, height / (width / basesize)), Image.BICUBIC)
@@ -145,10 +148,11 @@ def BlendEspnLogo(orig64):
     try:
         im.save(buf, format='JPEG')
     except Exception, k:
-        ErrorLog("BlendEspnLogo error,saving png: %s" % k)
+        ErrorLog("BlendLogo error,saving png: %s" % k)
         im.save(buf, format='PNG')
     jpeg = buf.getvalue()
     return base64.b64encode(jpeg)
+
 
 #--------------------------------------------------------------------
 def JpgToPng64(orig64):
@@ -157,6 +161,7 @@ def JpgToPng64(orig64):
     im.save(buf, format='PNG')
     jpeg = buf.getvalue()
     return base64.b64encode(jpeg)
+
 
 #--------------------------------------------------------------------
 def resize(im, img_w, img_h):
