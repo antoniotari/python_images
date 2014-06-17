@@ -38,3 +38,13 @@ crops and resize the image to create the thumbnail from a base64 string
 | img_h    | the desired image height  
 
 <i>return</i>: the resized/cropped base64 string of the image
+
+
+<b>Author:</b><br>
+  name:   Antonio Tari<br>
+  email:  antonio.tari@digiflare.com<br>
+  web:    www.antoniotari.com<br>
+  
+  <img src="https://dl.dropboxusercontent.com/u/47015400/2013-04-12%2000.43.49-1.jpg" alt="Antonio Tari" border="2" width="444" height="333">
+  <br>
+  
