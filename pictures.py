@@ -2,7 +2,7 @@
 # from io import StringIO
 from StringIO import StringIO
 import base64
-#from base64 import decodestring
+# from base64 import decodestring
 import random
 import string
 from utility import ErrorLog, id_generator
@@ -14,50 +14,41 @@ import json
 DEFAULTNOIMAGE_PATH = "/media/hd2/sportapp/defaultthumb.png"
 
 #--------------------------------------------------------------------
-#-----
 def Base64FromUrl(url):
+    """
+    returns the base64 string of the image from the passed url
+    :param url:     the url of the image
+    :return:        the base64 string of the image
+    """
     return base64.b64encode(urllib.urlopen(url).read())
 
-
 #--------------------------------------------------------------------
-#-----crops and resize the image to create the thumbnail
 def CropResizeImg(origFilePath, destFilePath, img_w, img_h):
+    """
+    crops and resize the image to create the thumbnail
+    :param origFilePath:    the path of the file on the disc
+    :param destFilePath:    the destination file path on the disc
+    :param img_w:           the desired image width
+    :param img_h:           the desired image height
+    :return:                the resized image
+    """
+
     ratio = 1. * img_w / img_h
     im = Image.open(origFilePath)  # open the input file
-    (width, height) = im.size  # get the size of the input image
-
-    if width > height * ratio:
-        # crop the image on the left and right side
-        newwidth = int(height * ratio)
-        left = width / 2 - newwidth / 2
-        right = left + newwidth
-        # keep the height of the image
-        top = 0
-        bottom = height
-    elif width < height * ratio:
-        # crop the image on the top and bottom
-        newheight = int(width * ratio)
-        top = height / 2 - newheight / 2
-        bottom = top + newheight
-        # keep the width of the impage
-        left = 0
-        right = width
-    if width != height * ratio:
-        im = im.crop((left, top, right, bottom))
-
-    im = im.resize((img_w, img_h), Image.BICUBIC)  #ANTIALIAS,BICUBIC,BILINEAR,NEAREST
+    im = resize(im, img_w, img_h)
     #im.save(fout, "jpeg", quality = 100) # save the image
     #fout.close()
     im.save(destFilePath)
 
-
-def CropResizeImg64Save(orig64, img_w, img_h, dest):
-    dest64 = CropResizeImg64(orig64, img_w, img_h)
-    im = Image.open(StringIO(base64.b64decode(dest64)))
-    im.save(dest)
-
-
+#--------------------------------------------------------------------
 def CropResizeImg64(orig64, img_w, img_h):
+    """
+    crops and resize the image to create the thumbnail from a base64 string
+    :param orig64: the base64 string of the image
+    :param img_w:  the desired image width
+    :param img_h:  the desired image height
+    :return:       the resized/cropped base64 string of the image
+    """
     ratio = 1. * img_w / img_h
     #if isinstance(orig64, str):
     #	orig64 = StringIO(orig64)
@@ -70,32 +61,25 @@ def CropResizeImg64(orig64, img_w, img_h):
     #image.close()
     #im = Image.open("/media/hd2/sportapp/imagetempthumb.png")
     im = Image.open(StringIO(base64.b64decode(orig64)))
-    (width, height) = im.size  # get the size of the input image
-    #return "w:%d h:%d"%(width,height)
-    if width > height * ratio:
-        # crop the image on the left and right side
-        newwidth = int(height * ratio)
-        left = width / 2 - newwidth / 2
-        right = left + newwidth
-        # keep the height of the image
-        top = 0
-        bottom = height
-    elif width < height * ratio:
-        # crop the image on the top and bottom
-        newheight = int(width * ratio)
-        top = height / 2 - newheight / 2
-        bottom = top + newheight
-        # keep the width of the impage
-        left = 0
-        right = width
-    if width != height * ratio:
-        im = im.crop((left, top, right, bottom))
-
-    im = im.resize((img_w, img_h), Image.BICUBIC)  #ANTIALIAS,BICUBIC,BILINEAR,NEAREST
+    im = resize(im, img_w, img_h)
     buf = StringIO()
     im.save(buf, format='PNG')
     jpeg = buf.getvalue()
     return base64.b64encode(jpeg)
+
+#--------------------------------------------------------------------
+def CropResizeImg64Save(orig64, img_w, img_h, dest):
+    """
+    crops and resize the image to create the thumbnail from a base64 string
+    and saves it to disc
+    :param orig64: the base64 string of the image
+    :param img_w:  the desired image width
+    :param img_h:  the desired image height
+    :param dest:   the destination file path on the disc
+    """
+    dest64 = CropResizeImg64(orig64, img_w, img_h)
+    im = Image.open(StringIO(base64.b64decode(dest64)))
+    im.save(dest)
 
 
 #savepath="/media/hd2/sportapp/pic_temp/%s.png"% id_generator(7)
@@ -113,6 +97,13 @@ def CropResizeImg64(orig64, img_w, img_h):
 
 
 def ResizeImg64(orig64, basesize=900, qualityJpg=70):
+    """
+    resize a base64 image without cropping
+    :param orig64:      the base64 string of the image
+    :param basesize:    the desired size of the base of the resulting image
+    :param qualityJpg:  values from 1 to 100, the desired resulting image quality
+    :return:            the resized base64 string of the image
+    """
     #ratio = 1. * img_w /img_h
     im = Image.open(StringIO(base64.b64decode(orig64)))
     (width, height) = im.size  # get the size of the input image
@@ -141,7 +132,7 @@ def ResizeImg64(orig64, basesize=900, qualityJpg=70):
     jpeg = buf.getvalue()
     return base64.b64encode(jpeg)
 
-
+#--------------------------------------------------------------------
 def BlendEspnLogo(orig64):
     #orig64=JpgToPng64(orig64)
     im = Image.open(StringIO(base64.b64decode(orig64)))
@@ -159,10 +150,43 @@ def BlendEspnLogo(orig64):
     jpeg = buf.getvalue()
     return base64.b64encode(jpeg)
 
-
+#--------------------------------------------------------------------
 def JpgToPng64(orig64):
     im = Image.open(StringIO(base64.b64decode(orig64)))
     buf = StringIO()
     im.save(buf, format='PNG')
     jpeg = buf.getvalue()
     return base64.b64encode(jpeg)
+
+#--------------------------------------------------------------------
+def resize(im, img_w, img_h):
+    """
+    function to resize the Image to desired width and height
+    :param im:
+    :param img_w:
+    :param img_h:
+    :return:
+    """
+    (width, height) = im.size  # get the size of the input image
+    #return "w:%d h:%d"%(width,height)
+    if width > height * ratio:
+        # crop the image on the left and right side
+        newwidth = int(height * ratio)
+        left = width / 2 - newwidth / 2
+        right = left + newwidth
+        # keep the height of the image
+        top = 0
+        bottom = height
+    elif width < height * ratio:
+        # crop the image on the top and bottom
+        newheight = int(width * ratio)
+        top = height / 2 - newheight / 2
+        bottom = top + newheight
+        # keep the width of the impage
+        left = 0
+        right = width
+    if width != height * ratio:
+        im = im.crop((left, top, right, bottom))
+
+    #assert isinstance(im, object)
+    return im.resize((img_w, img_h), Image.BICUBIC)  #ANTIALIAS,BICUBIC,BILINEAR,NEAREST
