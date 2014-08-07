@@ -203,7 +203,7 @@ def resize(im, img_w, img_h):
         #right = width
 		
 	if width != (height * ratio):
-		print "lets crop , left:%s top:%s right:%s bottom:%s height:%s"%(left, top, right, bottom,height)
+		#print "lets crop , left:%s top:%s right:%s bottom:%s height:%s"%(left, top, right, bottom,height)
 		im = im.crop((left, top,right,bottom))
 
     #assert isinstance(im, object)
