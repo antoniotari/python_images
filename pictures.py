@@ -165,33 +165,46 @@ def JpgToPng64(orig64):
 
 #--------------------------------------------------------------------
 def resize(im, img_w, img_h):
-    """
-    function to resize the Image to desired width and height
-    :param im:
-    :param img_w:
-    :param img_h:
-    :return:
-    """
-    (width, height) = im.size  # get the size of the input image
+	"""
+	function to resize the Image to desired width and height
+	:param im:
+	:param img_w:
+	:param img_h:
+	:return:
+	"""
+	
+	ratio = 1. * img_w /img_h
+	(width, height) = im.size  # get the size of the input image
+	#print "ratio %s %s %s"%(ratio,width, height)
+
+	top=0
+	bottom = height
+	left = 0
+	right = width
+    
     #return "w:%d h:%d"%(width,height)
-    if width > height * ratio:
-        # crop the image on the left and right side
-        newwidth = int(height * ratio)
-        left = width / 2 - newwidth / 2
-        right = left + newwidth
-        # keep the height of the image
-        top = 0
-        bottom = height
-    elif width < height * ratio:
-        # crop the image on the top and bottom
-        newheight = int(width * ratio)
-        top = height / 2 - newheight / 2
-        bottom = top + newheight
-        # keep the width of the impage
-        left = 0
-        right = width
-    if width != height * ratio:
-        im = im.crop((left, top, right, bottom))
+	if width > (height * ratio):
+		# crop the image on the left and right side
+		newwidth = int(height * ratio)
+		left = width / 2 - newwidth / 2
+		right = left + newwidth
+		# keep the height of the image
+		top = 0
+		bottom = height
+	elif width < (height * ratio):
+		# crop the image on the top and bottom
+		newheight = int(width * ratio)
+		top = height / 2 - newheight / 2
+		if top<0:top=top * -1
+		bottom =  height-top
+
+		# keep the width of the image
+		left = 0
+		right = width
+		
+	if width != (height * ratio):
+		print "lets crop %s %s %s %s %s %s"%(left, top, right, bottom,height,newheight)
+		im = im.crop((left, top, right, bottom))
 
     #assert isinstance(im, object)
-    return im.resize((img_w, img_h), Image.BICUBIC)  #ANTIALIAS,BICUBIC,BILINEAR,NEAREST
+	return im.resize((img_w, img_h), Image.BICUBIC)  #ANTIALIAS,BICUBIC,BILINEAR,NEAREST

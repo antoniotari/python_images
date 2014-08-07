@@ -1,5 +1,10 @@
 #!/usr/bin/python
-import MySQLdb
+
+try:
+    import MySQLdb
+except ImportError, e:
+	print "Import Error,exception: %s"%e
+     
 import json
 import base64
 import random
@@ -15,6 +20,8 @@ import os.path
 from defs import FILE_DEFAULTS_URL
 
 ERRORLOG_PATH = '/media/hd2/sportapp/sportapp_log.txt'
+
+
 
 # --------------------------------------------------------------------
 # -----it generates a random string, useful for filenames
