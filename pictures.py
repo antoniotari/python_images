@@ -173,38 +173,38 @@ def resize(im, img_w, img_h):
 	:return:
 	"""
 	
-	ratio = 1. * img_w /img_h
+	ratio = 1. * ((img_w * 1.)/(img_h * 1.))
 	(width, height) = im.size  # get the size of the input image
 	#print "ratio %s %s %s"%(ratio,width, height)
 
-	top=0
+	top = 0
 	bottom = height
 	left = 0
 	right = width
     
-    #return "w:%d h:%d"%(width,height)
-	if width > (height * ratio):
+	if width > height * ratio:
 		# crop the image on the left and right side
-		newwidth = int(height * ratio)
-		left = width / 2 - newwidth / 2
-		right = left + newwidth
+		newwidth = ((height * 1.) * ratio)
+		left2 =((width * 1.) / 2 - newwidth / 2)
+		left = (int) (left2 * 1)
+		right =(int) (left2 + newwidth)
 		# keep the height of the image
-		top = 0
-		bottom = height
-	elif width < (height * ratio):
-		# crop the image on the top and bottom
-		newheight = int(width * ratio)
-		top = height / 2 - newheight / 2
-		if top<0:top=top * -1
-		bottom =  height-top
-
-		# keep the width of the image
-		left = 0
-		right = width
+		#top = 0
+		#bottom = height
+	elif width < height * ratio:
+      	# crop the image on the top and bottom
+		newheight = ((width * 1.) / ratio)
+		top2 =((height * 1.) / 2 - newheight / 2)
+		top =(int) (top2 * 1)
+		if(top<0):top=top * -1
+		bottom = (int)(top2 + newheight)
+		# keep the width of the impage
+        #left = 0
+        #right = width
 		
 	if width != (height * ratio):
-		print "lets crop %s %s %s %s %s %s"%(left, top, right, bottom,height,newheight)
-		im = im.crop((left, top, right, bottom))
+		print "lets crop , left:%s top:%s right:%s bottom:%s height:%s"%(left, top, right, bottom,height)
+		im = im.crop((left, top,right,bottom))
 
     #assert isinstance(im, object)
 	return im.resize((img_w, img_h), Image.BICUBIC)  #ANTIALIAS,BICUBIC,BILINEAR,NEAREST
